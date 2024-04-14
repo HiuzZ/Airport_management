@@ -1,0 +1,236 @@
+CREATE DATABASE [TEST];
+USE [TEST];
+
+CREATE TABLE AIRPORT
+	(AP_NAME VARCHAR(100) NOT NULL,
+	CITY VARCHAR(50),
+	PRIMARY KEY(AP_NAME)
+);
+
+CREATE TABLE AIRLINE
+	(AIRLINE_ID VARCHAR(3) NOT NULL,
+	AL_NAME VARCHAR(50),
+	HOTLINE VARCHAR(20),
+	PRIMARY KEY(AIRLINE_ID)
+);
+
+CREATE TABLE CONTAIN
+	(AP_NAME VARCHAR(100) NOT NULL,
+	AIRLINE_ID VARCHAR(3) NOT NULL,
+	FACILITIES VARCHAR(20),
+	PRIMARY KEY(AP_NAME, AIRLINE_ID),
+	FOREIGN KEY(AP_NAME) REFERENCES AIRPORT(AP_NAME),
+	FOREIGN KEY(AIRLINE_ID) REFERENCES AIRLINE(AIRLINE_ID)
+);
+
+CREATE TABLE FLIGHT
+	(FLIGHT_CODE VARCHAR(10) NOT NULL,
+	AIRLINE_ID VARCHAR(3),
+	SOURCE VARCHAR(20),
+	DESTINATION VARCHAR(20),
+	ARRIVAL_TIME VARCHAR(10),
+	DEPARTURE_TIME VARCHAR(10),
+	STATUS VARCHAR(10),
+	FLIGHT_TYPE VARCHAR(20),
+	LAYOVER_TIME VARCHAR(10),
+	NO_OF_STOPS INT,
+	PRIMARY KEY(FLIGHT_CODE),
+	FOREIGN KEY(AIRLINE_ID) REFERENCES AIRLINE(AIRLINE_ID)
+);
+
+CREATE TABLE PASSENGER
+	(PASSENGER_ID VARCHAR(10) NOT NULL,
+	FULL_NAME VARCHAR(30),
+	SEX VARCHAR(6),
+	DOB DATE,
+	PHONE VARCHAR(10),
+	PRIMARY KEY(PASSENGER_ID)
+);
+
+CREATE TABLE CHILD
+	(PASSENGER_ID VARCHAR(10) NOT NULL,
+	CHILD_ID VARCHAR(10) NOT NULL,
+	FULLNAME VARCHAR(30),
+	SEX VARCHAR(6),
+	DOB DATE,
+	PRIMARY KEY(PASSENGER_ID, CHILD_ID),
+	FOREIGN KEY(PASSENGER_ID) REFERENCES PASSENGER(PASSENGER_ID)
+);
+
+CREATE TABLE BOOKS
+	(PASSENGER_ID VARCHAR(10) NOT NULL,
+	FLIGHT_CODE VARCHAR(10),
+	BOOKING_DATE DATE,
+	PRIMARY KEY(PASSENGER_ID, FLIGHT_CODE),
+	FOREIGN KEY(PASSENGER_ID) REFERENCES PASSENGER(PASSENGER_ID),
+	FOREIGN KEY(FLIGHT_CODE) REFERENCES FLIGHT(FLIGHT_CODE)
+);
+
+CREATE TABLE CANCELS
+	(PASSENGER_ID VARCHAR(10) NOT NULL,
+	FLIGHT_CODE VARCHAR(10),
+	CANCELING_DATE DATE,
+	PRIMARY KEY(PASSENGER_ID, FLIGHT_CODE),
+	FOREIGN KEY(PASSENGER_ID) REFERENCES PASSENGER(PASSENGER_ID),
+	FOREIGN KEY(FLIGHT_CODE) REFERENCES FLIGHT(FLIGHT_CODE)
+);
+
+CREATE TABLE EMPLOYEE
+	(EMPLOYEE_ID VARCHAR(10) NOT NULL,
+	FULL_NAME VARCHAR(30),
+	SEX VARCHAR(6),
+	DOB DATE,
+	PHONE VARCHAR(10),
+	JOB_TYPE VARCHAR(30),
+	AS_TYPE VARCHAR(30),
+	E_TYPE VARCHAR(30),
+	SHIFT VARCHAR(30),
+	POSITION VARCHAR(50),
+	AP_NAME VARCHAR(100),
+	PRIMARY KEY(EMPLOYEE_ID),
+	FOREIGN KEY(AP_NAME) REFERENCES AIRPORT(AP_NAME)
+);
+
+CREATE TABLE SERVES
+	(EMPLOYEE_ID VARCHAR(10),
+	PASSENGER_ID VARCHAR(10),
+	SERVICE VARCHAR(20),
+	PRIMARY KEY(EMPLOYEE_ID, PASSENGER_ID),
+	FOREIGN KEY(EMPLOYEE_ID) REFERENCES EMPLOYEE(EMPLOYEE_ID),
+	FOREIGN KEY(PASSENGER_ID) REFERENCES PASSENGER(PASSENGER_ID)
+);
+
+CREATE TABLE TICKET
+	(TICKET_NUMBER VARCHAR(20),
+	PRICE VARCHAR(20),
+	DESTINATION VARCHAR(20),
+	CLASS VARCHAR(20),
+	SEAT_NO VARCHAR(10),
+	DATE_OF_TRAVEL DATE,
+	PASSENGER_ID VARCHAR(10),
+	PRIMARY KEY(TICKET_NUMBER),
+	FOREIGN KEY(PASSENGER_ID) REFERENCES PASSENGER(PASSENGER_ID)
+);
+
+
+INSERT INTO AIRPORT (AP_NAME, CITY) VALUES
+('Tan Son Nhat International Airport', 'Ho Chi Minh City'),
+('Noi Bai International Airport', 'Hanoi'),
+('Da Nang International Airport', 'Da Nang'),
+('Cam Ranh International Airport', 'Khanh Hoa'),
+('Phu Quoc International Airport', 'Kien Giang'),
+('Can Tho International Airport', 'Can Tho'),
+('Cat Bi International Airport', 'Hai Phong'),
+('Lien Khuong Airport', 'Lam Dong'),
+('Phu Cat Airport', 'Binh Dinh'),
+('Tuy Hoa Airport', 'Phu Yen');
+
+
+INSERT INTO AIRLINE (AIRLINE_ID, AL_NAME, HOTLINE) VALUES
+('VN', 'Vietnam Airlines', '1900 1100'),
+('VJ', 'VietJet Air', '1900 1886'),
+('PQ', 'Pacific Airlines', '1900 1550'),
+('BL', 'Bamboo Airways', '1900 1166');
+
+
+INSERT INTO CONTAIN (AP_NAME, AIRLINE_ID, FACILITIES) VALUES
+('Tan Son Nhat International Airport', 'VN', 'VIP Lounge'),
+('Noi Bai International Airport', 'VN', 'Business Lounge'),
+('Da Nang International Airport', 'VJ', 'Priority Boarding'),
+('Cam Ranh International Airport', 'VN', 'VIP Lounge'),
+('Phu Quoc International Airport', 'BL', 'Priority Security');
+
+
+
+INSERT INTO FLIGHT (FLIGHT_CODE, AIRLINE_ID, SOURCE, DESTINATION, ARRIVAL_TIME, DEPARTURE_TIME, STATUS, FLIGHT_TYPE, LAYOVER_TIME, NO_OF_STOPS) VALUES
+('VN123', 'VN', 'Ho Chi Minh City', 'Hanoi', '12:00 PM', '9:00 AM', 'On Time', 'Connecting', '2 hours', 1),
+('BL456', 'BL', 'Hanoi', 'Da Nang', '3:30 PM', '1:00 PM', 'Delayed', 'Nonstop', '0 hours', 0),
+('VJ789', 'VJ', 'Da Nang', 'Nha Trang', '5:45 PM', '4:15 PM', 'On Time', 'Connecting', '1 hour', 1),
+('VN234', 'VN', 'Ho Chi Minh City', 'Phu Quoc', '2:30 PM', '12:00 PM', 'On Time', 'Connecting', '2.5 hours', 1),
+('VJ567', 'VJ', 'Nha Trang', 'Phu Quoc', '4:45 PM', '3:15 PM', 'Delayed', 'Nonstop', '0 hours', 0),
+('BL789', 'BL', 'Da Nang', 'Ho Chi Minh City', '6:00 PM', '4:30 PM', 'On Time', 'Connecting', '1.5 hours', 1),
+('VN345', 'VN', 'Phu Quoc', 'Hanoi', '3:00 PM', '1:30 PM', 'On Time', 'Nonstop', '0 hours', 0),
+('BL901', 'BL', 'Da Nang', 'Nha Trang', '8:00 PM', '6:30 PM', 'Delayed', 'Connecting', '2 hours', 2),
+('VJ123', 'VJ', 'Ho Chi Minh City', 'Nha Trang', '7:30 PM', '6:00 PM', 'On Time', 'Nonstop', '0 hours', 0),
+('VN456', 'VN', 'Hanoi', 'Da Nang', '10:00 PM', '8:30 PM', 'Delayed', 'Connecting', '1 hour', 1);
+
+
+INSERT INTO PASSENGER (PASSENGER_ID, FULL_NAME, SEX, DOB, PHONE) VALUES
+('P001', 'Nguyen Van Tung', 'Male', '1990-05-15', '0901234567'),
+('P002', 'Tran Thi Phuon Anh', 'Female', '1985-03-20', '0912345678'),
+('P003', 'Le Van Sy', 'Male', '2000-12-10', '0976543210'),
+('P004', 'Pham Thi Dung', 'Female', '1978-07-25', '0987654321'),
+('P005', 'Tran Thi Minh', 'Female', '1988-04-03', '0912345678'),
+('P006', 'Le Van Cuong', 'Male', '1995-07-12', '0987654321'),
+('P007', 'Pham Van Hoang', 'Male', '1980-12-28', '0912345678'),
+('P008', 'Nguyen Thi Thu', 'Female', '1998-05-20', '0901234567'),
+('P009', 'Ho Van An', 'Male', '1975-10-15', '0987654321'),
+('P010', 'Tran Thi Kim', 'Female', '1993-08-05', '0901234567');
+
+
+
+INSERT INTO CHILD (PASSENGER_ID, CHILD_ID, FULLNAME, SEX, DOB) VALUES
+('P001', 'C001', 'Nguyen Thi Vinh Hang', 'Female', '2010-02-10'),
+('P001', 'C002', 'Nguyen Van Ve', 'Male', '2012-08-15'),
+('P002', 'C003', 'Tran Van Vo', 'Male', '2014-05-20'),
+('P004', 'C001', 'Nguyen Van An', 'Male', '2010-03-05'),
+('P004', 'C002', 'Nguyen Thi Bao', 'Female', '2012-07-10'),
+('P006', 'C003', 'Le Van Minh', 'Male', '2014-05-15'),
+('P007', 'C004', 'Pham Van Khanh', 'Male', '2017-12-22');
+
+
+
+INSERT INTO BOOKS (PASSENGER_ID, FLIGHT_CODE, BOOKING_DATE) VALUES
+('P001', 'VN123', '2023-11-06'),
+('P002', 'BL456', '2023-11-07'),
+('P003', 'VJ789', '2023-11-08'),
+('P004', 'VN123', '2023-11-05'),
+('P005', 'BL456', '2023-11-04'),
+('P006', 'VJ789', '2023-11-03'),
+('P007', 'VN234', '2023-11-02'),
+('P008', 'BL789', '2023-11-07'),
+('P009', 'VN345', '2023-11-06'),
+('P010', 'VJ123', '2023-11-04');
+
+
+
+INSERT INTO CANCELS (PASSENGER_ID, FLIGHT_CODE, CANCELING_DATE) VALUES
+('P001', 'VN123', '2023-11-05'),
+('P002', 'BL456', '2023-11-04'),
+('P003', 'VJ789', '2023-11-03'),
+('P004', 'VN123', '2023-11-04'),
+('P006', 'VJ789', '2023-11-02');
+
+
+
+INSERT INTO EMPLOYEE (EMPLOYEE_ID, FULL_NAME, SEX, DOB, PHONE, JOB_TYPE, AS_TYPE, E_TYPE, SHIFT, POSITION, AP_NAME) VALUES
+('E001', 'Tran Van Anh', 'Male', '1985-04-20', '0912345678', 'Administrative Support', 'Full-time', 'Permanent', 'Morning Shift', 'Security Officer', 'Tan Son Nhat International Airport'),
+('E002', 'Nguyen Thi Hoa', 'Female', '1990-07-15', '0987654321', 'Engineer', 'Part-time', 'Temporary', 'Evening Shift', 'Customer Service Representative', 'Noi Bai International Airport'),
+('E003', 'Le Duc Minh', 'Male', '1982-12-30', '0976543210', 'Traffic Monitor', 'Full-time', 'Permanent', 'Night Shift', 'Maintenance Technician', 'Phu Quoc International Airport'),
+('E004', 'Tran Van Binh', 'Male', '1988-03-25', '0911111111', 'Engineer', 'Full-time', 'Permanent', 'Morning Shift', 'Maintenance Technician', 'Da Nang International Airport'),
+('E005', 'Nguyen Van Cuong', 'Male', '1995-05-12', '0922222222', 'Traffic Monitor', 'Part-time', 'Temporary', 'Evening Shift', 'Customer Service Representative', 'Cam Ranh International Airport'),
+('E006', 'Le Thi Huong', 'Female', '1986-11-18', '0933333333', 'Airport Authority', 'Full-time', 'Permanent', 'Night Shift', 'Airport Manager', 'Phu Quoc International Airport');
+
+
+
+INSERT INTO SERVES (EMPLOYEE_ID, PASSENGER_ID, SERVICE) VALUES
+('E001', 'P001', 'Security Check'),
+('E002', 'P002', 'Check-In Assistance'),
+('E003', 'P003', 'Maintenance Support'),
+('E004', 'P008', 'Security Check'),
+('E005', 'P009', 'Check-In Assistance'),
+('E006', 'P010', 'Maintenance Support'),
+('E001', 'P004', 'Baggage Handling'),
+('E002', 'P005', 'Boarding Assistance'),
+('E003', 'P006', 'In-Flight Catering');
+
+
+INSERT INTO TICKET (TICKET_NUMBER, PRICE, DESTINATION, CLASS, SEAT_NO, DATE_OF_TRAVEL, PASSENGER_ID) VALUES
+('T001', '150 USD', 'Hanoi', 'Economy', 'A101', '2023-11-10', 'P001'),
+('T002', '250 USD', 'Da Nang', 'Business', 'B201', '2023-11-12', 'P002'),
+('T003', '100 USD', 'Nha Trang', 'Economy', 'C301', '2023-11-14', 'P003'),
+('T011', '300 USD', 'Da Nang', 'Business', 'B301', '2023-11-10', 'P008'),
+('T012', '150 USD', 'Nha Trang', 'Economy', 'C401', '2023-11-12', 'P009'),
+('T013', '200 USD', 'Hanoi', 'Business', 'B501', '2023-11-14', 'P010');
+
+
